@@ -1,0 +1,10 @@
+.{
+    .name = "Zig-ROM-Compress",
+    .version = "1.0.0",
+    .dependencies = .{
+        .@"Zig-BitHelper" = .{
+            .url = "https://github.com/bcrist/Zig-BitHelper/archive/3a6c4fc3e4687a27e433667e7eb0c666336c6289.tar.gz",
+            .hash = "1220c64879b36e674cf97404f16eb3af5e640567e76ef33ab7c00fd060b3098227d1",
+        },
+    },
+}

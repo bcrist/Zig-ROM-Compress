@@ -1,10 +1,7 @@
-const std = @import("std");
-const bits = @import("bits");
-
 pub fn compress(comptime E: type, result_allocator: std.mem.Allocator, temp_allocator: std.mem.Allocator, entries: []E, ) ![]u8 {
     // partition entries into groups having the same data value
     std.debug.assert(entries.len > 0);
-    std.sort.pdq(E, entries, @as(?void, null), E.lessThan);
+    std.sort.pdq(E, entries, @as(?void, null), E.less_than);
     var d_partitions = std.ArrayList([]E).init(temp_allocator);
     defer d_partitions.deinit();
     {
@@ -74,7 +71,7 @@ pub fn compress(comptime E: type, result_allocator: std.mem.Allocator, temp_allo
             .offset = d_delta,
             .count = @intCast(addr_ranges_to_write.len),
         };
-        
+
         while (addr_ranges_to_write.len > 0) {
             var written_count = try Range.write(range_to_write, &result_buffer);
             for (addr_ranges_to_write[0..written_count]) |addr_range| {
@@ -161,7 +158,7 @@ pub fn Entry(comptime A: type, comptime D: type) type {
             return .{ .addr = addr, .data = data };
         }
 
-        pub fn lessThan(_: ?void, e0: Self, e1: Self) bool {
+        pub fn less_than(_: ?void, e0: Self, e1: Self) bool {
             if (e0.data != e1.data) {
                 return e0.data < e1.data;
             }
@@ -170,3 +167,6 @@ pub fn Entry(comptime A: type, comptime D: type) type {
         }
     };
 }
+
+const bits = @import("bits");
+const std = @import("std");

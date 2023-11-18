@@ -1,7 +1,3 @@
-const std = @import("std");
-const compress = @import("rom-compress").compress;
-const decompress = @import("rom-decompress").decompress;
-
 test "rom_compress/decompress roundtripping" {
     const Entry = @import("rom-compress").Entry(u32, u16);
 
@@ -47,3 +43,7 @@ test "rom_compress/decompress roundtripping" {
     var ctx = Ctx { .test_data = &raw_test_data };
     decompress(compressed, &ctx);
 }
+
+const compress = @import("rom-compress").compress;
+const decompress = @import("rom-decompress").decompress;
+const std = @import("std");

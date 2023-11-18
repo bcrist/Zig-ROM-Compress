@@ -1,6 +1,3 @@
-const std = @import("std");
-const bits = @import("bits");
-
 pub fn decompress(input: []const u8, context: anytype) void {
     var data = input;
 
@@ -19,7 +16,7 @@ pub fn decompress(input: []const u8, context: anytype) void {
         if (rec.count > 0) {
             context.data(d);
 
-            var iter = RangeIterator {
+            var iter = Range_Iterator {
                 .data = data,
                 .ranges_remaining = rec.count,
             };
@@ -78,11 +75,11 @@ const Range = struct {
     }
 };
 
-const RangeIterator = struct {
+const Range_Iterator = struct {
     data: []const u8 = &[_]u8{},
     ranges_remaining: u16 = 0,
 
-    fn next(self: *RangeIterator) ?Range {
+    fn next(self: *Range_Iterator) ?Range {
         if (self.ranges_remaining == 0) return null;
         var r = Range.read(self.data);
         self.data = self.data[r.bytes..];
@@ -90,3 +87,6 @@ const RangeIterator = struct {
         return r;
     }
 };
+
+const bits = @import("bits");
+const std = @import("std");

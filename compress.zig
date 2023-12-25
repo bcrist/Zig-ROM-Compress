@@ -30,7 +30,7 @@ pub fn compress(comptime E: type, result_allocator: std.mem.Allocator, temp_allo
 
     var d: E.Data = 0;
     for (d_partitions.items) |partition| {
-        var d_delta = partition[0].data - d;
+        const d_delta = partition[0].data - d;
         d = partition[0].data;
 
         var a: E.Addr = 0;
@@ -73,7 +73,7 @@ pub fn compress(comptime E: type, result_allocator: std.mem.Allocator, temp_allo
         };
 
         while (addr_ranges_to_write.len > 0) {
-            var written_count = try Range.write(range_to_write, &result_buffer);
+            const written_count = try Range.write(range_to_write, &result_buffer);
             for (addr_ranges_to_write[0..written_count]) |addr_range| {
                 const written_addr_count = try Range.write(addr_range, &result_buffer);
                 std.debug.assert(written_addr_count == addr_range.count);

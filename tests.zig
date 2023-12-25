@@ -17,7 +17,7 @@ test "rom_compress/decompress roundtripping" {
         };
     }
 
-    var compressed = try compress(Entry, std.testing.allocator, std.testing.allocator, &test_data);
+    const compressed = try compress(Entry, std.testing.allocator, std.testing.allocator, &test_data);
     defer std.testing.allocator.free(compressed);
 
     const Ctx = struct {

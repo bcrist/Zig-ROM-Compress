@@ -5,7 +5,7 @@ pub fn decompress(input: []const u8, context: anytype) void {
     var a: u32 = 0;
 
     while (data.len > 0) {
-        var rec = Range.read(data);
+        const rec = Range.read(data);
         data = data[rec.bytes..];
 
         d += rec.offset;
@@ -42,13 +42,13 @@ const Range = struct {
     fn read(data: []const u8) Range {
         var r: Range = undefined;
 
-        var initial = data[0];
+        const initial = data[0];
         if ((initial & 1) == 0) {
             r.bytes = 1;
             r.count = 1;
             r.offset = @as(u7, @truncate(initial >> 1));
         } else if ((initial & 2) == 0) {
-            var encoded_count: u3 = @truncate(initial >> 2);
+            const encoded_count: u3 = @truncate(initial >> 2);
             r.bytes = 2;
             r.count = if (encoded_count == 0) 256 else @as(u7, 1) << (encoded_count - 1);
             r.offset = bits.concat(.{
@@ -81,7 +81,7 @@ const Range_Iterator = struct {
 
     fn next(self: *Range_Iterator) ?Range {
         if (self.ranges_remaining == 0) return null;
-        var r = Range.read(self.data);
+        const r = Range.read(self.data);
         self.data = self.data[r.bytes..];
         self.ranges_remaining -= 1;
         return r;

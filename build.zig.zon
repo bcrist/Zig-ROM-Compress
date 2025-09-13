@@ -1,11 +1,12 @@
 .{
-    .name = "Zig-ROM-Compress",
+    .name = .rom_compress,
     .version = "1.0.1",
-    .minimum_zig_version = "0.12.0-dev.2063+804cee3b9",
+    .minimum_zig_version = "0.15.1",
+    .fingerprint = 0xd56cb6ed1ca3633d,
     .dependencies = .{
-        .@"Zig-BitHelper" = .{
-            .url = "https://github.com/bcrist/Zig-BitHelper/archive/98cfaaae0abfe7a8bc396846dcca148a75e0b6ed.tar.gz",
-            .hash = "12208dd5374a5886ee0300fe82ca8e691a30f240941b35c698dfdd01597a47c23931",
+        .bit_helper = .{
+            .url = "git+https://github.com/bcrist/zig-bithelper#01fe5f519f54ab42c649096573c45ddaa351e1d5",
+            .hash = "bit_helper-1.0.1-C8c75iguAABAXw3jPh9pvNp-RPvblh1vV7MbQ1w99fFF",
         },
     },
     .paths = .{

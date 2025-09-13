@@ -1,4 +1,4 @@
-pub fn compress(comptime E: type, result_allocator: std.mem.Allocator, temp_allocator: std.mem.Allocator, entries: []E, ) ![]u8 {
+pub fn compress(comptime E: type, temp_allocator: std.mem.Allocator, w: *std.io.Writer, entries: []E, ) !void {
     // partition entries into groups having the same data value
     std.debug.assert(entries.len > 0);
     std.sort.pdq(E, entries, @as(?void, null), E.less_than);
@@ -21,9 +21,6 @@ pub fn compress(comptime E: type, result_allocator: std.mem.Allocator, temp_allo
             }
         }
     }
-
-    var result_buffer: std.io.Writer.Allocating = .init(temp_allocator);
-    defer result_buffer.deinit();
 
     var addr_ranges: std.ArrayList(Range) = .empty;
     defer addr_ranges.deinit(temp_allocator);
@@ -54,11 +51,9 @@ pub fn compress(comptime E: type, result_allocator: std.mem.Allocator, temp_allo
         }
 
         const actual_addr_range_count = count: {
-            const result_buffer_position = result_buffer.writer.end;
             var writer: Range_List_Writer = .{ .remaining = addr_ranges.items };
-            while (try writer.write(&result_buffer.writer)) |_| {}
-            // undo the temporary stuff we just wrote; we'll write it again in a bit
-            result_buffer.writer.end = result_buffer_position;
+            var discard = std.io.Writer.Discarding.init(&.{});
+            while (try writer.write(&discard.writer)) |_| {}
             break :count writer.actual_ranges_written;
         };
 
@@ -73,14 +68,12 @@ pub fn compress(comptime E: type, result_allocator: std.mem.Allocator, temp_allo
             .remaining = addr_ranges.items,
         };
 
-        while (try data_range_writer.write(&result_buffer.writer)) |num_addr_ranges_to_write| {
+        while (try data_range_writer.write(w)) |num_addr_ranges_to_write| {
             for (0..num_addr_ranges_to_write) |_| {
-                _ = try addr_range_writer.write(&result_buffer.writer);
+                _ = try addr_range_writer.write(w);
             }
         }
     }
-
-    return try result_allocator.dupe(u8, result_buffer.writer.buffered());
 }
 
 /// Ranges can be encoded with 1-6 bytes:

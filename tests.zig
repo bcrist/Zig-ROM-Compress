@@ -17,8 +17,10 @@ test "rom_compress/decompress roundtripping" {
         };
     }
 
-    const compressed = try compress.compress(Entry, std.testing.allocator, std.testing.allocator, &test_data);
-    defer std.testing.allocator.free(compressed);
+    var w = std.io.Writer.Allocating.init(std.testing.allocator);
+    defer w.deinit();
+
+    try compress.compress(Entry, std.testing.allocator, &w.writer, &test_data);
 
     const Ctx = struct {
         test_data: []u16,
@@ -41,7 +43,7 @@ test "rom_compress/decompress roundtripping" {
     };
 
     var ctx = Ctx { .test_data = &raw_test_data };
-    decompress.decompress(compressed, &ctx);
+    decompress.decompress(w.writer.buffered(), &ctx);
 }
 
 test "range roundtripping" {

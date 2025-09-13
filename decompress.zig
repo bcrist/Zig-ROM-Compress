@@ -34,7 +34,7 @@ pub fn decompress(input: []const u8, context: anytype) void {
     }
 }
 
-pub fn dump(input: []const u8, writer: std.io.AnyWriter) !void {
+pub fn dump(input: []const u8, writer: *std.io.Writer) !void {
     var data = input;
 
     var d: u32 = 0;
@@ -44,7 +44,7 @@ pub fn dump(input: []const u8, writer: std.io.AnyWriter) !void {
         const rec = Range.read(data);
         data = data[rec.bytes..];
 
-        try writer.print("D{}\n", .{ rec });
+        try writer.print("D{f}\n", .{ rec });
 
         d += rec.offset;
         if (rec.offset > 0) {
@@ -59,7 +59,10 @@ pub fn dump(input: []const u8, writer: std.io.AnyWriter) !void {
                 .ranges_remaining = rec.count,
             };
             while (iter.next()) |range| {
-                try writer.print("    A{}\tA: [0x{X:0>8}:0x{X:0>8}]\n", .{ range, a +% range.offset, a +% range.offset +% range.count });
+		var buf: [64]u8 = undefined;
+		var bw = std.io.Writer.fixed(&buf);
+		bw.print("{f}", .{ range }) catch {};
+                try writer.print("    A{s:<25} A: [0x{X:0>8}:0x{X:0>8}]\n", .{ bw.buffered(), a +% range.offset, a +% range.offset +% range.count });
                 a +%= range.offset;
             }
 
@@ -183,9 +186,7 @@ pub const Range = struct {
         return r;
     }
 
-    pub fn format(self: Range, comptime fmt: []const u8, options: std.fmt.FormatOptions, writer: anytype) !void {
-        _ = fmt;
-        _ = options;
+    pub fn format(self: Range, writer: *std.io.Writer) !void {
         try writer.print("R{}[{}:{} ({})]", .{ self.bytes, self.offset, self.offset +% self.count, self.count });
     }
 };

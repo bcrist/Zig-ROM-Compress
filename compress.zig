@@ -1,4 +1,4 @@
-pub fn compress(comptime E: type, temp_allocator: std.mem.Allocator, w: *std.io.Writer, entries: []E, ) !void {
+pub fn compress(comptime E: type, temp_allocator: std.mem.Allocator, w: *std.Io.Writer, entries: []E, ) !void {
     // partition entries into groups having the same data value
     std.debug.assert(entries.len > 0);
     std.sort.pdq(E, entries, @as(?void, null), E.less_than);
@@ -52,7 +52,7 @@ pub fn compress(comptime E: type, temp_allocator: std.mem.Allocator, w: *std.io.
 
         const actual_addr_range_count = count: {
             var writer: Range_List_Writer = .{ .remaining = addr_ranges.items };
-            var discard = std.io.Writer.Discarding.init(&.{});
+            var discard = std.Io.Writer.Discarding.init(&.{});
             while (try writer.write(&discard.writer)) |_| {}
             break :count writer.actual_ranges_written;
         };
@@ -95,7 +95,7 @@ pub const Range = struct {
     offset: u32,
     count: u32,
 
-    pub fn write(self: Range, w: *std.io.Writer) std.io.Writer.Error!u32 {
+    pub fn write(self: Range, w: *std.Io.Writer) std.Io.Writer.Error!u32 {
         const offset = self.offset;
         const count = self.count;
 
@@ -260,7 +260,7 @@ pub const Range_List_Writer = struct {
     current: ?Range = null,
     actual_ranges_written: u32 = 0,
 
-    pub fn write(self: *Range_List_Writer, w: *std.io.Writer) std.io.Writer.Error!?u32 {
+    pub fn write(self: *Range_List_Writer, w: *std.Io.Writer) std.Io.Writer.Error!?u32 {
         var current = self.current orelse next: {
             if (self.remaining.len == 0) return null;
             const next = self.remaining[0];

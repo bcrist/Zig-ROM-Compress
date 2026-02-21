@@ -17,7 +17,7 @@ test "rom_compress/decompress roundtripping" {
         };
     }
 
-    var w = std.io.Writer.Allocating.init(std.testing.allocator);
+    var w = std.Io.Writer.Allocating.init(std.testing.allocator);
     defer w.deinit();
 
     try compress.compress(Entry, std.testing.allocator, &w.writer, &test_data);
@@ -65,12 +65,12 @@ test "dump" {
         };
     }
 
-    var w = std.io.Writer.Allocating.init(std.testing.allocator);
+    var w = std.Io.Writer.Allocating.init(std.testing.allocator);
     defer w.deinit();
 
     try compress.compress(Entry, std.testing.allocator, &w.writer, &test_data);
 
-    var d = std.io.Writer.Allocating.init(std.testing.allocator);
+    var d = std.Io.Writer.Allocating.init(std.testing.allocator);
     defer d.deinit();
 
     try decompress.dump(w.written(), &d.writer);
@@ -174,7 +174,7 @@ test "dump" {
 }
 
 test "range roundtripping" {
-    var data = std.io.Writer.Allocating.init(std.testing.allocator);
+    var data = std.Io.Writer.Allocating.init(std.testing.allocator);
     defer data.deinit();
 
     const numbers = [_]u32 {

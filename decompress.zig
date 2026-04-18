@@ -34,7 +34,7 @@ pub fn decompress(input: []const u8, context: anytype) void {
     }
 }
 
-pub fn dump(input: []const u8, writer: *std.io.Writer) !void {
+pub fn dump(input: []const u8, writer: *std.Io.Writer) !void {
     var data = input;
 
     var d: u32 = 0;
@@ -60,7 +60,7 @@ pub fn dump(input: []const u8, writer: *std.io.Writer) !void {
             };
             while (iter.next()) |range| {
 		var buf: [64]u8 = undefined;
-		var bw = std.io.Writer.fixed(&buf);
+		var bw = std.Io.Writer.fixed(&buf);
 		bw.print("{f}", .{ range }) catch {};
                 try writer.print("    A{s:<25} A: [0x{X:0>8}:0x{X:0>8}]\n", .{ bw.buffered(), a +% range.offset, a +% range.offset +% range.count });
                 a +%= range.offset;
@@ -186,7 +186,7 @@ pub const Range = struct {
         return r;
     }
 
-    pub fn format(self: Range, writer: *std.io.Writer) !void {
+    pub fn format(self: Range, writer: *std.Io.Writer) !void {
         try writer.print("R{}[{}:{} ({})]", .{ self.bytes, self.offset, self.offset +% self.count, self.count });
     }
 };

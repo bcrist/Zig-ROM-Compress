@@ -2,8 +2,8 @@ test "rom_compress/decompress roundtripping" {
     const Entry = compress.Entry(u32, u16);
 
     const n = 65536;
-    var raw_test_data = [_]u16 {0} ** n;
-    var test_data = [_]Entry { .{ .addr = undefined, .data = undefined } } ** n;
+    var raw_test_data: [n]u16 = @splat(0);
+    var test_data: [n]Entry = undefined;
 
     var rng = std.Random.Xoroshiro128.init(1234);
     var rnd = rng.random();
@@ -50,8 +50,8 @@ test "dump" {
     const Entry = compress.Entry(u32, u16);
 
     const n = 64;
-    var raw_test_data = [_]u16 {0} ** n;
-    var test_data = [_]Entry { .{ .addr = undefined, .data = undefined } } ** n;
+    var raw_test_data: [n]u16 = @splat(0);
+    var test_data: [n]Entry = undefined;
 
     var rng = std.Random.Xoroshiro128.init(1234);
     var rnd = rng.random();

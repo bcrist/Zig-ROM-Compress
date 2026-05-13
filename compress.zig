@@ -81,7 +81,7 @@ pub fn compress(comptime E: type, temp_allocator: std.mem.Allocator, w: *std.Io.
 /// -------- -------- -------- -------- -------- --------
 /// ooooooo0                                                // Offset < 128           1 <= Count <= 1
 /// ooonnn01 oooooooo                                       // Offset < 2048               Count in { 1, 2, 4, 8, 16, 32, 64, 256 }
-/// ooooo011 nnnnnnnn                                       // Offset < 32            3 <= Count <= 258
+/// ooooo011 nnnnnnnn                                       // Offset < 32            3 <= Count <= 258, Count not in { 4, 8, 16, 32, 64, 256 } (covered by previous encoding)
 /// nnnn0111 oooooooo nnoooooo                              // Offset < 16384         1 <= Count <= 64
 /// nnn01111 nnnnnnnn oooooooo oooooooo                     // Offset < 65536         1 <= Count <= 2048
 /// nnn11111 oooooooo oooooooo oooooooo                     // Offset < 16777216      1 <= Count <= 8

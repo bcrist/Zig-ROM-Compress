@@ -5,8 +5,8 @@
     .minimum_zig_version = "0.17.0-dev.260+a79428757",
     .dependencies = .{
         .bit_helper = .{
-            .url = "git+https://codeberg.org/bcrist/zig-bithelper#dd96f7539407aed32963acff2f107c92959f7141",
-            .hash = "bit_helper-1.0.1-C8c75qUzAAD-7o4nHBgdrS2fTlcnhAgDiUn-WTw-Drjz",
+            .url = "git+https://codeberg.org/bcrist/zig-bithelper?ref=zig-master#bb073ca63ad779a87feb8fb8cd7fd423ad69a621",
+            .hash = "bit_helper-1.0.1-C8c75mUzAACGXtGTFJ6vEL3-aTEo2kPsDXPAMq4fanax",
         },
     },
     .paths = .{

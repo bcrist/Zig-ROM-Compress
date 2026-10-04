@@ -21,3 +21,11 @@ It can then use delta compression and RLE on the transformed data.
 The algorithm works well in most real-world cases where there are many addresses with the same data value,
 and even better if those addresses appear in contiguous blocks.
 It is possible, however, (particularly with encrypted or random-like data) that the compressed version may actually be larger.
+
+## Branches
+| Zig Version  | Recommended Branch |
+|--------------|--------------------|
+| 0.18.0-dev.* | zig-master         |
+| 0.17.0       | main               |
+| 0.16.0       | zig-0.16           |
+| 0.15.2       | zig-0.15           |

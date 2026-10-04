@@ -2,11 +2,11 @@
     .name = .rom_compress,
     .fingerprint = 0xd56cb6ed1ca3633d,
     .version = "1.2.1",
-    .minimum_zig_version = "0.17.0-dev.812+5434f85c4",
+    .minimum_zig_version = "0.17.0",
     .dependencies = .{
         .bit_helper = .{
-            .url = "git+https://codeberg.org/bcrist/zig-bithelper?ref=zig-master#62f451f1348f0f3cea15ec9aab5316783797a667",
-            .hash = "bit_helper-1.0.3-C8c75sc0AACsCP-66h5RpBjluSXh9l0wJyHWJ3Uki4tf",
+            .url = "git+https://codeberg.org/bcrist/zig-bithelper#f044314564990478e006434d062f180d8dda5ffb",
+            .hash = "bit_helper-1.0.3-C8c75rU0AAAH2u085Dwh6B9cv3mJRUNTAjvRRTHv23Bk",
         },
     },
     .paths = .{

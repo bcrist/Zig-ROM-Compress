@@ -16,7 +16,7 @@ pub fn decompress(input: []const u8, context: anytype) void {
         if (rec.count > 0) {
             context.data(d);
 
-            var iter = Range_Iterator {
+            var iter = Range_Iterator{
                 .data = data,
                 .ranges_remaining = rec.count,
             };
@@ -44,7 +44,7 @@ pub fn dump(input: []const u8, writer: *std.Io.Writer) !void {
         const rec = Range.read(data);
         data = data[rec.bytes..];
 
-        try writer.print("D{f}\n", .{ rec });
+        try writer.print("D{f}\n", .{rec});
 
         d += rec.offset;
         if (rec.offset > 0) {
@@ -52,16 +52,16 @@ pub fn dump(input: []const u8, writer: *std.Io.Writer) !void {
         }
 
         if (rec.count > 0) {
-            try writer.print("  D: 0x{X:0>8}\n", .{ d });
+            try writer.print("  D: 0x{X:0>8}\n", .{d});
 
-            var iter = Range_Iterator {
+            var iter = Range_Iterator{
                 .data = data,
                 .ranges_remaining = rec.count,
             };
             while (iter.next()) |range| {
-		var buf: [64]u8 = undefined;
-		var bw = std.Io.Writer.fixed(&buf);
-		bw.print("{f}", .{ range }) catch {};
+                var buf: [64]u8 = undefined;
+                var bw = std.Io.Writer.fixed(&buf);
+                bw.print("{f}", .{range}) catch {};
                 try writer.print("    A{s:<25} A: [0x{X:0>8}:0x{X:0>8}]\n", .{ bw.buffered(), a +% range.offset, a +% range.offset +% range.count });
                 a +%= range.offset;
             }

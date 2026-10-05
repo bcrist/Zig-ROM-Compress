@@ -1,4 +1,9 @@
-pub fn compress(comptime E: type, temp_allocator: std.mem.Allocator, w: *std.Io.Writer, entries: []E, ) !void {
+pub fn compress(
+    comptime E: type,
+    temp_allocator: std.mem.Allocator,
+    w: *std.Io.Writer,
+    entries: []E,
+) !void {
     // partition entries into groups having the same data value
     std.debug.assert(entries.len > 0);
     std.sort.pdq(E, entries, @as(?void, null), E.less_than);
@@ -14,7 +19,7 @@ pub fn compress(comptime E: type, temp_allocator: std.mem.Allocator, w: *std.Io.
             } else {
                 var new_partition = partition.*;
                 new_partition.len += 1;
-                new_partition = new_partition[new_partition.len-1..];
+                new_partition = new_partition[new_partition.len - 1 ..];
                 partition = try d_partitions.addOne(temp_allocator);
                 partition.* = new_partition;
                 d = new_partition[0].data;
@@ -105,7 +110,6 @@ pub const Range = struct {
                 @as(u1, 0),
                 @as(u7, @intCast(offset)),
             }));
-
         } else if (offset < 2048 and (count == 256 or count <= 64 and @popCount(count) == 1)) {
             // ooonnn01 oooooooo
             const encoded_count: u3 = switch (count) {
@@ -125,7 +129,6 @@ pub const Range = struct {
                 @as(u3, @intCast(offset >> 8)),
             }));
             try w.writeByte(@truncate(offset));
-
         } else if (offset < 32 and 3 <= count and count <= 258) {
             // ooooo011 nnnnnnnn
             const encoded_count: u8 = @intCast(count - 3);
@@ -134,7 +137,6 @@ pub const Range = struct {
                 @as(u5, @intCast(offset)),
             }));
             try w.writeByte(encoded_count);
-
         } else if (offset < 16384 and 1 <= count and count <= 64) {
             // nnnn0111 oooooooo nnoooooo
             const encoded_count: u6 = @intCast(count - 1);
@@ -147,7 +149,6 @@ pub const Range = struct {
                 @as(u6, @intCast(offset >> 8)),
                 @as(u2, @intCast(encoded_count >> 4)),
             }));
-
         } else if (offset < 65536 and 1 <= count and count <= 2048) {
             // nnn01111 nnnnnnnn oooooooo oooooooo
             const encoded_count: u11 = @intCast(count - 1);
@@ -158,7 +159,6 @@ pub const Range = struct {
             try w.writeByte(@truncate(encoded_count));
             try w.writeByte(@truncate(offset));
             try w.writeByte(@intCast(offset >> 8));
-
         } else if (offset < 16777216 and 1 <= count and count <= 8) {
             // nnn11111 oooooooo oooooooo oooooooo
             const encoded_count: u11 = @intCast(count - 1);
@@ -169,7 +169,6 @@ pub const Range = struct {
             try w.writeByte(@truncate(offset));
             try w.writeByte(@truncate(offset >> 8));
             try w.writeByte(@intCast(offset >> 16));
-
         } else if (offset < 65536 and 2049 <= count and count <= 10240) {
             // nnnnn011 00000001 nnnnnnnn oooooooo oooooooo
             const encoded_count: u13 = @intCast(count - 2049);
@@ -181,7 +180,6 @@ pub const Range = struct {
             try w.writeByte(@truncate(encoded_count));
             try w.writeByte(@truncate(offset));
             try w.writeByte(@intCast(offset >> 8));
-
         } else if (offset < 16777216 and 9 <= count and count <= 8200) {
             // nnnnn011 00000101 nnnnnnnn oooooooo oooooooo oooooooo
             const encoded_count: u13 = @intCast(count - 9);
@@ -194,7 +192,6 @@ pub const Range = struct {
             try w.writeByte(@truncate(offset));
             try w.writeByte(@truncate(offset >> 8));
             try w.writeByte(@intCast(offset >> 16));
-
         } else if (offset < 32) {
             // ooooo011 00001101 nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn
             try w.writeByte(bits.concat(.{
@@ -206,7 +203,6 @@ pub const Range = struct {
             try w.writeByte(@truncate(count >> 8));
             try w.writeByte(@truncate(count >> 16));
             try w.writeByte(@intCast(count >> 24));
-
         } else if (count < 32) {
             // nnnnn011 00011101 oooooooo oooooooo oooooooo oooooooo
             try w.writeByte(bits.concat(.{
@@ -218,7 +214,6 @@ pub const Range = struct {
             try w.writeByte(@truncate(offset >> 8));
             try w.writeByte(@truncate(offset >> 16));
             try w.writeByte(@intCast(offset >> 24));
-
         } else if (offset >= 16777216) {
             std.debug.assert(count > 31);
             return write(.{
@@ -268,7 +263,7 @@ pub const Range_List_Writer = struct {
             self.remaining = self.remaining[1..];
             break :next next;
         };
-        
+
         const count_written = try current.write(w);
         self.actual_ranges_written += 1;
         if (count_written == current.count) {

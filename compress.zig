@@ -110,7 +110,7 @@ pub const Range = struct {
                 @as(u1, 0),
                 @as(u7, @intCast(offset)),
             }));
-        } else if (offset < 2048 and (count == 256 or count <= 64 and @popCount(count) == 1)) {
+        } else if (offset < 2048 and (count == 256 or (count <= 64 and @popCount(count) == 1))) {
             // ooonnn01 oooooooo
             const encoded_count: u3 = switch (count) {
                 256 => 0,
